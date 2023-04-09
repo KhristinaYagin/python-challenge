@@ -1,103 +1,71 @@
-import csv
 import os
+import csv
 
-#Path to collect data from the resource folder 
-election_data_csv = os.path.join("..", "Pypoll", "Resources", "election_data_csv")
-election_data_csv
+#Path to collect data from the resource folder
+budget_csv = os.path.join("..", "Pybank", "Resources", "budget_data.csv")
 
-# Total Vote Counter
-total_votes = 0
+months= 0
+net_change_list = []
+greatest_increase=["", 0]
+greatest_decrease=["", 9999999999999999999999]
+total_net = 0
+prev_net = 0 
+net_change =0
 
-# Candidate Options and Vote Counters
-candidate_options = []
-candidate_votes= {} # dictionary
+with open ("C:/Users/yagin/OneDrive/Desktop/python-challenge/Pybank/Resources/budget_data.csv", "r" ) as d:
+    reader= csv.reader(d)
 
-# Winning candidate and Winning Count Tracker
+    header = next (reader)
+    # print(header)
 
-winning_candidate= ""
+    first_row=next(reader)
+    #print(first_row)
+    months = months + 1
+    total_net = total_net + int(first_row[1])
+    prev_net =  int(first_row[1])
+    #print(months)
+    #print(total_net)
 
-winning_count = 0
 
-# Read the csv and convert it into a list of dictionaries
-with open ("C:/Users/yagin/OneDrive/Desktop/python-challenge/Pypoll/Resources/election_data.csv") as election_data:
-    reader= csv.reader(election_data)
-
-    # Read the header
-    header = next(reader)
-
-    # For each row...
     for row in reader:
-
-        # Run the loader animation
-        #print(".",end=""),
-
-        # Add to the total vote count
-        total_votes = total_votes + 1
-
-        # Extract the candidate from each row
-        candidate_name = row[2]
-
-        # If the candidate does not match any existing candidate... 
-
-        # (In a way, our loop is "discovering" candidates as it goes)
-
-    # If the candidate does not match any existing candidate...
-      # (In a way, our loop is "discovering" candidates as it goes)
-        if candidate_name not in candidate_options:
-
-            # Add it to the list of candidates in the running
-            candidate_options.append(candidate_name)
-
-            # And begin tracking that candidate's voter count
-            candidate_votes[candidate_name]= 0
-
-        # Then add a vote to that candidate's count
-            candidate_votes[candidate_name]=candidate_votes[candidate_name] + 1
+        months = months + 1
+        total_net = total_net + int(first_row[1])   
+       
+        net_change  = int(row[1]) - prev_net 
+        net_change_list.append ( net_change )
 
 
-    #Print the results and export the data to our text file
-    with open("C:/Users/yagin/OneDrive/Desktop/python-challenge/Pypoll/Resources/election_data.csv") as txt_file:
+        if  net_change > greatest_increase[1]:
+            greatest_increase[1] = net_change 
+            greatest_increase[0] = row[0]
 
-        #Print the final vote count (to terminal)
-        election_results = (
-            f"\n\nElection Results\n"
-            f"-------------------\n"
-            f"Total Votes: {total_votes}\n"
-            f"----------------------\n")
-        print(election_results, end="")
+        if  net_change < greatest_decrease[1]:
+            greatest_decrease[1] = net_change 
+            greatest_decrease[0] = row[0]
 
-        # Save the final vote count to the text file
-        txt_file.write(election_results)
+net_monthly_change_ave = sum(net_change_list)/len(net_change_list)
 
-        # Determine the winner by looping through the counts
-        for candidate in candidate_votes:
 
-            # Retrieve vote count and percentage
-            votes=candidate_votes.get(candidate)
-
-            vote_percentage = float(votes) / float(total_votes)*100
-
-        # Determine winning vote count and candidate
-            if (votes>winning_count):
-                winning_count = votes
-                winning_candidate = candidate
-
-            # Print each candidate's voter count and percentage (to terminal)
-            voter_output = f"{candidate}:{vote_percentage:.3f}% ({votes})\n"
-            print(voter_output, end="")
-
-            # Save each candidate's voter count and percentage to the text file
-            txt_file.write(voter_output)
-
-        # Print the winning candidate (to terminal)
-        winning_candidate_summary = (
-          f"-----------------\n"
-          f"Winner:{winning_candidate}\n"
-          f"--------------------\n")
-        print(winning_candidate_summary)
-
-        # Save the winning candidate's name to the text file
-        txt_file.write(winning_candidate_summary)
+output = (
+    f"Financial Analysis\n"
+    f"----------------------------\n"
+    f"Total Months: {months}\n"
+    f"Total: ${total_net}\n"
+    f"Average Change: ${net_monthly_change_ave:.2f}\n"
+    f"Greatest Increase in Profits: {greatest_increase[0]} (${greatest_increase[1]})\n"
+    f"Greatest Decrease in Profits: {greatest_decrease[0]} (${greatest_decrease[1]})\n")
 
 print(output)
+
+with open ("C:/Users/yagin/OneDrive/Desktop/python-challenge/Pybank/Resources/PyBank_output.txt", "w") as text_file:
+    text_file.write(output)
+
+
+
+
+
+
+
+
+
 

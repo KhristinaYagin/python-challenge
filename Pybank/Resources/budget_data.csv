@@ -85,10 +85,3 @@ Nov-16,-112209
 Dec-16,516313
 Jan-17,607208
 Feb-17,382539
-def getSum(n):
-sum=0
-for digit in str(n):
-sum+=int(digit)
-return sum
-n=2 to 87
-print(getsum(n))

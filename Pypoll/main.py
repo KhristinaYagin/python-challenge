@@ -22,7 +22,7 @@ winning_count = 0
 
 # Read the csv and convert it into a list of dictionaries
 with open ("Resources/election_data.csv") as csvfile:
-    reader= csv.reader(election_data_csv)
+    reader= csv.reader(csvfile)
 
     # Read the header
     header = next(reader)
@@ -58,7 +58,7 @@ with open ("Resources/election_data.csv") as csvfile:
 
 
     #Print the results and export the data to our text file
-    with open("Resources/election_data.csv") as txt_file:
+    with open("output.txt","w") as txt_file:
 
         #Print the final vote count (to terminal)
         election_results = (
@@ -101,5 +101,4 @@ with open ("Resources/election_data.csv") as csvfile:
         # Save the winning candidate's name to the text file
         txt_file.write(winning_candidate_summary)
 
-print(output)
 
